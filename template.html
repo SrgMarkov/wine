@@ -114,24 +114,24 @@
           </div>
         </div>
         <div class="row">
-        {% for category in production_data.items() %}
+        {% for category, products in products_data.items() %}
           <div class="col-12 section-title text-center mb-5">
-            <h2 class="d-block">{{category[0]}}</h2>
+            <h2 class="d-block">{{category}}</h2>
           </div>
-          {% for wine in category[1] %}
+          {% for product in products %}
             <div class="col-lg-4 mb-5 col-md-6">
               <div class="wine_v_1 text-center pb-4 pt-5">
-                <img src="images/{{wine.Картинка}}" alt="{{wine.Название}}" class="img-fluid">
-                {% if wine.Акция %}
-                <img src="assets/profitable.png" style="width:10rem;height: 10rem;position:absolute;right: -20px;top: -20px;">
+                <img src="images/{{product.Картинка}}" alt="{{product.Название}}" class="img-fluid">
+                {% if product.Акция %}
+                  <img src="assets/profitable.png" style="width:10rem;height: 10rem;position:absolute;right: -20px;top: -20px;">
                 {% endif %}
                 <div>
-                  <h3 class="heading mt-3 mb-3 text-dark">{{wine.Название}}</h3>
+                  <h3 class="heading mt-3 mb-3 text-dark">{{product.Название}}</h3>
                   <p>
-                    {% if wine.sort %}
-                    Сорт винограда - {{wine.Сорт}}<br/>
+                    {% if product.sort %}
+                      Сорт винограда - {{product.Сорт}}<br/>
                     {% endif %}
-                    <span class="price">{{wine.Цена}} р.</span>
+                    <span class="price">{{product.Цена}} р.</span>
                   </p>
                 </div>
               </div>

@@ -1,14 +1,15 @@
+import os
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 import datetime
 import pandas
 import collections
+from dotenv import load_dotenv
 
 
-def convert_time_to_period(date):
-    now_year = date.year
-    start_year = datetime.date(year=1920, month=1, day=1)
-    delta_year = now_year - start_year.year
+def convert_time_to_period(now_date):
+    date_of_creation = datetime.date(year=1920, month=1, day=1)
+    delta_year = now_date.year - date_of_creation.year
     if delta_year % 10 == 1 and delta_year % 100 != 11:
         suffix_year = 'год'
     elif str(delta_year % 10) in ('2', '3', '4') and str(delta_year % 100) not in ('12', '13', '14'):
@@ -18,16 +19,17 @@ def convert_time_to_period(date):
     return f'{delta_year} {suffix_year}'
 
 
-def converting_from_excel(filename):
-    categories_dict = collections.defaultdict(list)
-    for category in sorted(set(pandas.read_excel(filename)['Категория'].tolist())):
-        for wine in pandas.read_excel(filename, na_values=None, keep_default_na=False).to_dict(orient='records'):
-            if wine['Категория'] == category:
-                categories_dict[category].append(wine)
-    return categories_dict
+def convert_from_excel(filename):
+    categories = collections.defaultdict(list)
+    products = pandas.read_excel(filename, na_values=None, keep_default_na=False).to_dict(orient='records')
+    for product in products:
+        category = product['Категория']
+        categories[category].append(product)
+    return categories
 
 
 def main():
+    load_dotenv()
     env = Environment(
         loader=FileSystemLoader('.'),
         autoescape=select_autoescape(['html', 'xml'])
@@ -37,7 +39,7 @@ def main():
 
     rendered_page = template.render(
         time_period=convert_time_to_period(datetime.datetime.now()),
-        production_data=converting_from_excel('wine3.xlsx')
+        products_data=convert_from_excel(os.getenv('DIR'))
     )
 
     with open('index.html', 'w', encoding="utf8") as file:
