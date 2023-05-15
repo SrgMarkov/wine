@@ -8,8 +8,8 @@ from dotenv import load_dotenv
 
 
 def convert_time_to_period(now_date):
-    date_of_creation = datetime.date(year=1920, month=1, day=1)
-    delta_year = now_date.year - date_of_creation.year
+    date_of_creation = 1920
+    delta_year = now_date.year - date_of_creation
     if delta_year % 10 == 1 and delta_year % 100 != 11:
         suffix_year = 'год'
     elif str(delta_year % 10) in ('2', '3', '4') and str(delta_year % 100) not in ('12', '13', '14'):
@@ -39,7 +39,7 @@ def main():
 
     rendered_page = template.render(
         time_period=convert_time_to_period(datetime.datetime.now()),
-        products_data=convert_from_excel(os.getenv('DIR'))
+        products=convert_from_excel(os.getenv('DIR'))
     )
 
     with open('index.html', 'w', encoding="utf8") as file:
